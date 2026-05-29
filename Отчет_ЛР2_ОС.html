@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>ЛР2 — Файловые системы Windows</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 28px; line-height: 1.5; max-width: 1100px; }
+    h1 { color: #1a3a5c; }
+    h2 { margin-top: 32px; border-bottom: 1px solid #ccc; padding-bottom: 6px; }
+    .task { margin: 20px 0; padding: 14px 16px; background: #f7f9fc; border-left: 4px solid #2b6cb0; }
+    .task h3 { margin-top: 0; }
+    .shot { background: #0c0c0c; padding: 8px; margin: 10px 0; }
+    .shot img { max-width: 100%; display: block; }
+    .meta { color: #555; }
+    .answer { margin: 8px 0; }
+  </style>
+</head>
+<body>
+<h1>Лабораторная работа №2. Работа с файловыми системами в ОС Windows</h1>
+<p class="meta">Выполнил: vboxuser &nbsp;|&nbsp; Компьютер: WIN11PRO &nbsp;|&nbsp; Рабочая группа: WORKGROUP &nbsp;|&nbsp; Дата: 29.05.2026</p>
+
+<h2>Часть 1. Локальные файловые системы</h2>
+
+<div class="task">
+  <h3>Задание 1</h3>
+  <p><b>Текст задания:</b> Создать папку в ФС NTFS и вложить в нее несколько файлов. Установить права доступа на папку. Какие права получили вложенные файлы? Как изменить эти права?</p>
+  <p class="answer"><b>Ответ:</b> Файлы наследуют ACL папки (в icacls отмечено «(I)»). Изменение — «Свойства → Безопасность» или <code>icacls /grant</code>, <code>/inheritance:r</code>.</p>
+  <div class="shot"><img src="screenshots/01_ntfs_folder.png" alt="Задание 1"></div>
+  <div class="shot"><img src="screenshots/01b_inherited_rights.png" alt="Наследование прав"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 2</h3>
+  <p><b>Текст задания:</b> Установите специальные разрешения для папки. Какую область действия можно задать для этих разрешений?</p>
+  <p class="answer"><b>Ответ:</b> «Только эта папка», «вложенные папки и файлы», «только файлы» и т.д.; в icacls — (OI), (CI), (IO), (NP).</p>
+  <div class="shot"><img src="screenshots/02_special_permissions.png" alt="Задание 2"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 3</h3>
+  <p><b>Текст задания:</b> Если разрешения назначены пользователю лично и как члену группы — какие итоговые разрешения? Как действуют запреты?</p>
+  <p class="answer"><b>Ответ:</b> Эффективные права складываются; явный <b>Deny</b> блокирует соответствующее действие даже при наличии Allow.</p>
+  <div class="shot"><img src="screenshots/03_user_group_deny.png" alt="Задание 3"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 4</h3>
+  <p><b>Текст задания:</b> Кто является владельцем файла? Как и кому можно передать владение файлом?</p>
+  <p class="answer"><b>Ответ:</b> Владелец — создатель (WIN11PRO\vboxuser). Передача: «Безопасность → Дополнительно → Владелец» или <code>takeown</code>.</p>
+  <div class="shot"><img src="screenshots/04_ownership.png" alt="Задание 4"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 5</h3>
+  <p><b>Текст задания:</b> Изучите ICACLS: создать файл, сохранить разрешения, выдать чтение одному пользователю и запретить запись другому.</p>
+  <p class="answer"><b>Ответ:</b> Базовые ACE унаследованы; дополнительные задаются icacls (/grant, /deny, /save).</p>
+  <div class="shot"><img src="screenshots/05_icacls.png" alt="Задание 5"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 6</h3>
+  <p><b>Текст задания:</b> Передать владение файлом (графический интерфейс и командная строка).</p>
+  <p class="answer"><b>Ответ:</b> CLI: <code>takeown /f путь</code>, <code>icacls /setowner</code>. GUI: вкладка «Владелец» в дополнительных параметрах безопасности.</p>
+  <div class="shot"><img src="screenshots/06_takeown.png" alt="Задание 6"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 7</h3>
+  <p><b>Текст задания:</b> Установите квоты дискового пространства для разных пользователей.</p>
+  <p class="answer"><b>Ответ:</b> Квоты включаются командой <code>fsutil quota track C:</code>. Просмотр — <code>fsutil quota query C:</code> (использование по пользователям/SID).</p>
+  <div class="shot"><img src="screenshots/07_disk_quota.png" alt="Задание 7"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 8</h3>
+  <p><b>Текст задания:</b> Сожмите папку (командная строка и GUI). Включите отображение сжатых файлов другим цветом.</p>
+  <p class="answer"><b>Ответ:</b> CLI: <code>compact /C /S</code>. GUI: «Сжать содержимое» в дополнительных атрибутах. Цвет: ShowCompressColor=1.</p>
+  <div class="shot"><img src="screenshots/08_compress_cli.png" alt="Сжатие CLI"></div>
+  <div class="shot"><img src="screenshots/08b_compress_gui_equiv.png" alt="Сжатие GUI"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 9</h3>
+  <p><b>Текст задания:</b> Шифрование EFS, сертификат, сохранение сертификата.</p>
+  <p class="answer"><b>Ответ:</b> <code>cipher /E</code> создаёт сертификат EFS; резервная копия — <code>certutil -exportPFX</code>.</p>
+  <div class="shot"><img src="screenshots/09_efs_cipher.png" alt="EFS"></div>
+  <div class="shot"><img src="screenshots/09b_efs_cert_export.png" alt="Сертификат"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 10</h3>
+  <p><b>Текст задания:</b> Символические и жёсткие ссылки, точка подключения (junction).</p>
+  <p class="answer"><b>Ответ:</b> Hard link — тот же MFT-запись; symlink — путь; junction — reparse point каталога на локальный путь.</p>
+  <div class="shot"><img src="screenshots/10_links.png" alt="Ссылки"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 11</h3>
+  <p><b>Текст задания:</b> Монтирование тома на папку NTFS.</p>
+  <p class="answer"><b>Ответ:</b> <code>mountvol папка \\?\Volume{GUID}\</code>; требуются права администратора.</p>
+  <div class="shot"><img src="screenshots/11_mount_volume.png" alt="Mount"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 12</h3>
+  <p><b>Текст задания:</b> Именованные потоки NTFS.</p>
+  <p class="answer"><b>Ответ:</b> Основной поток и именованный :AltStream сосуществуют в одном файле.</p>
+  <div class="shot"><img src="screenshots/12_streams.png" alt="Потоки"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 13</h3>
+  <p><b>Текст задания:</b> Запрет доступа и аудит попыток.</p>
+  <p class="answer"><b>Ответ:</b> Запрет через icacls /deny; аудит — SACL + auditpol, события в журнале «Безопасность».</p>
+  <div class="shot"><img src="screenshots/13_audit_deny.png" alt="Аудит"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 14</h3>
+  <p><b>Текст задания:</b> Сервис дефрагментации, фрагментация дисков.</p>
+  <p class="answer"><b>Ответ:</b> Служба defragsvc; анализ — <code>defrag C: /A</code> или Optimize-Volume.</p>
+  <div class="shot"><img src="screenshots/14_defrag.png" alt="Дефрагментация"></div>
+</div>
+
+<h2>Часть 2. Разделяемые файловые ресурсы</h2>
+
+<div class="task">
+  <h3>Задание 15</h3>
+  <p><b>Текст задания:</b> Изучите состав домена, в который входит компьютер.</p>
+  <p class="answer"><b>Ответ:</b> Компьютер не в домене AD, рабочая группа WORKGROUP.</p>
+  <div class="shot"><img src="screenshots/part2_domain.png" alt="Домен"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 16</h3>
+  <p><b>Текст задания:</b> Запустите оснастку «Общие папки».</p>
+  <p class="answer"><b>Ответ:</b> Команда <code>fssm.msc</code> или MMC с модулем fssm.</p>
+  <div class="shot"><img src="screenshots/part2_mmc_shares.png" alt="Общие папки"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 17–18</h3>
+  <p><b>Текст задания:</b> Выделить папку в общий доступ; скрытый ресурс; сетевые и локальные разрешения.</p>
+  <p class="answer"><b>Ответ:</b> Скрытый ресурс — имя с «$» (LabHidden$). В <code>net view</code> виден только LabShare; скрытый ресурс доступен по полному пути. Итоговый доступ — наиболее строгий из NTFS и share.</p>
+  <div class="shot"><img src="screenshots/part2_shares.png" alt="Общий доступ"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 19</h3>
+  <p><b>Текст задания:</b> Подключить сетевую папку как локальный диск (в т.ч. скрытый ресурс).</p>
+  <p class="answer"><b>Ответ:</b> <code>net use Z: \\localhost\LabHidden$</code> — подключение скрытого ресурса по полному имени.</p>
+  <div class="shot"><img src="screenshots/part2_net_use.png" alt="net use"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 20</h3>
+  <p><b>Текст задания:</b> Автономные файлы и методы синхронизации.</p>
+  <p class="answer"><b>Ответ:</b> Служба CscService; синхронизация при входе, по расписанию, вручную из центра синхронизации.</p>
+  <div class="shot"><img src="screenshots/part2_offline_files.png" alt="Offline"></div>
+</div>
+
+<h2>Часть 3. Обработка файлов по расширению</h2>
+
+<div class="task">
+  <h3>Задание 21–22</h3>
+  <p><b>Текст задания:</b> Создать своё расширение (.lb2); EncryptionContextMenu.</p>
+  <p class="answer"><b>Ответ:</b> Зарегистрирован тип lb2file; EncryptionContextMenu=1 в HKCU\...\Explorer\Advanced.</p>
+  <div class="shot"><img src="screenshots/part3_lb2_registry.png" alt="Реестр lb2"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 23</h3>
+  <p><b>Текст задания:</b> Подразделы Run и RunOnce — для чего используются?</p>
+  <p class="answer"><b>Ответ:</b> Автозапуск программ при загрузке ОС и входе пользователя.</p>
+  <div class="shot"><img src="screenshots/part3_run_keys.png" alt="Run"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 24</h3>
+  <p><b>Текст задания:</b> REG-файл, импорт, изменение команды обработки.</p>
+  <p class="answer"><b>Ответ:</b> Формат: Windows Registry Editor Version 5.00, [раздел], "имя"=тип:значение.</p>
+  <div class="shot"><img src="screenshots/part3_reg_import.png" alt="REG import"></div>
+</div>
+
+<div class="task">
+  <h3>Задание 25</h3>
+  <p><b>Текст задания:</b> ASSOC и FTYPE.</p>
+  <p class="answer"><b>Ответ:</b> assoc связывает расширение с ProgID; ftype задаёт команду открытия для ProgID.</p>
+  <div class="shot"><img src="screenshots/part3_assoc_ftype.png" alt="assoc ftype"></div>
+</div>
+
+</body>
+</html>
